@@ -1,0 +1,16 @@
+version: '2.0'
+services:
+  server:
+    build: server/
+    image: "nettyserver:latest"
+    ports:
+      - "8080:8080"
+
+  client:
+    build: client/
+    image: "nettyclient:latest"
+    environment:
+      host: server
+    depends_on:
+      - server
+
