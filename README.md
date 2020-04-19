@@ -21,6 +21,8 @@
 
 ## Reference:
 
+https://netty.io/
+
 https://www.baeldung.com/netty
 
 https://dzone.com/articles/build-a-simple-netty-application-with-and-without
