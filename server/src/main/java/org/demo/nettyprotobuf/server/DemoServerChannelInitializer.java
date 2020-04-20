@@ -13,6 +13,11 @@ public class DemoServerChannelInitializer extends ChannelInitializer<SocketChann
 
   @Override
   protected void initChannel(SocketChannel ch) throws Exception {
+    // Why this order, decoder, encoder, handler?
+    // Note: Every IO operation on a Channel in Netty is non-blocking.
+    // This means that every operation is returned immediately after the call. 
+    // When recieved message uses decoder, and then response needs encoder,
+    // then handling the requests uses handler.
     ChannelPipeline p = ch.pipeline();
     p.addLast(new ProtobufVarint32FrameDecoder());
     p.addLast(new ProtobufDecoder(DemoMessages.DemoRequest.getDefaultInstance()));
