@@ -47,6 +47,8 @@ By default, it uses port 8080. Make sure the port is available.
 
 ## Reference:
 
+https://netty.io/
+
 https://www.baeldung.com/netty
 
 https://dzone.com/articles/build-a-simple-netty-application-with-and-without
