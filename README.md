@@ -5,8 +5,18 @@
 
 ## How to run.
 * First Option (use docker compose):
-
-    docker-compose up
+    
+    start:
+    
+    `docker-compose up`
+    
+    build docker image:
+    
+    `docker-compose build`
+    
+    stop:
+    
+    `docker-compose down`
     
 * Second Option (Manually):
 
@@ -18,6 +28,22 @@
     ```
        java -jar client/target/client-1.0-SNAPSHOT.jar
     ```
+  
+ ## What it does?
+ 
+ * Server:
+ 
+    The netty network application server accepts plain test messages and files. 
+    The files will be saved under /tmp folder.
+ 
+ * Client:
+ 
+    The client sends 10 plain text messages and then one file. Then exit.
+ 
+ 
+## Note:
+
+By default, it uses port 8080. Make sure the port is available.
 
 ## Reference:
 

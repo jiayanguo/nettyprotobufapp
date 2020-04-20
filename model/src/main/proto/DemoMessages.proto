@@ -1,12 +1,25 @@
+syntax = "proto2";
 package org.demo.nettyprotobuf.proto;
 
 option optimize_for = SPEED;
 
+enum Type {
+  MSG = 0;
+  FILE = 1;
+}
+
 message DemoRequest {
-  optional string requestMsg = 1;
+  required Type type = 1;
+  optional string requestMsg = 2;
+  optional FileMsg file = 3;
 }
 
 message DemoResponse {
   optional uint32 code = 1;
   optional string responseMsg = 2;
+}
+
+message FileMsg{
+  optional bytes fileBytes = 1;
+  optional string filename = 2;
 }

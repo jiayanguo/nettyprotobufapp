@@ -3,4 +3,4 @@
 *.ipr
 *.iws
 **/target
-**/dependency-reduce-pom.xml
+**/dependency-reduced-pom.xml

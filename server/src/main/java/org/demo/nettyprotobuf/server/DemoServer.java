@@ -9,7 +9,15 @@ import io.netty.handler.logging.LoggingHandler;
 
 public class DemoServer {
 
-  static final int PORT = Integer.parseInt(System.getenv("port"));
+  static final int PORT;
+
+  static {
+    if (System.getenv("port") == null){
+      PORT = 8080;
+    } else {
+      PORT = Integer.parseInt(System.getenv("port"));
+    }
+  }
 
   public static void main(String[] args) throws InterruptedException {
     
