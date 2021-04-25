@@ -1,4 +1,4 @@
-# This is a network application build on netty, websocket protobuf.
+# This is a network application build on netty, websocket and protobuf.
 
 ## How to build
 * mvn clean install
