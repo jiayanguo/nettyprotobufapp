@@ -1,4 +1,4 @@
-package org.demo.nettyprotobuf.server;
+package org.demo.nettyprotobuf.websocket.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
@@ -7,7 +7,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public class DemoServer {
+public class DemoWsServer {
 
     static final int PORT;
 
@@ -31,7 +31,7 @@ public class DemoServer {
             bootStrap.group(serverGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new DemoServerChannelInitializer());
+                    .childHandler(new DemoWsServerChannelInitializer());
             // Bind to port
             bootStrap.bind(PORT).sync().channel().closeFuture().sync();
         } finally {

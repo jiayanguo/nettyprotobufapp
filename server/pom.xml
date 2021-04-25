@@ -21,6 +21,11 @@
             <artifactId>model</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-common</artifactId>
+            <version>4.1.48.Final</version>
+        </dependency>
     </dependencies>
 
     <build>

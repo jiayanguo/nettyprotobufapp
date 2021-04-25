@@ -9,19 +9,19 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.demo.nettyprotobuf.proto.DemoMessages;
 
-public class DemoClientInitializer  extends ChannelInitializer<SocketChannel> {
+public class DemoClientInitializer extends ChannelInitializer<SocketChannel> {
 
-  @Override
-  protected void initChannel(SocketChannel ch) throws Exception {
-    ChannelPipeline p = ch.pipeline();
-    
-    p.addLast(new ProtobufVarint32FrameDecoder());
-    p.addLast(new ProtobufDecoder(DemoMessages.DemoResponse.getDefaultInstance()));
+    @Override
+    protected void initChannel(SocketChannel ch) throws Exception {
+        ChannelPipeline p = ch.pipeline();
 
-    p.addLast(new ProtobufVarint32LengthFieldPrepender());
-    p.addLast(new ProtobufEncoder());
+        p.addLast(new ProtobufVarint32FrameDecoder());
+        p.addLast(new ProtobufDecoder(DemoMessages.DemoResponse.getDefaultInstance()));
 
-    p.addLast(new DemoMsgClientHandler());
-  }
-  
+        p.addLast(new ProtobufVarint32LengthFieldPrepender());
+        p.addLast(new ProtobufEncoder());
+
+        p.addLast(new DemoMsgClientHandler());
+    }
+
 }

@@ -1,9 +1,11 @@
-package org.demo.nettyprotobuf.client;
+package org.demo.nettyprotobuf.websocket.server.client;
 
 import com.google.protobuf.ByteString;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.demo.nettyprotobuf.proto.DemoMessages;
 
 import java.io.IOException;
@@ -12,13 +14,23 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
-public class DemoMsgClientHandler extends SimpleChannelInboundHandler<DemoMessages.DemoResponse> {
+public class DemoMsgClientHandler extends SimpleChannelInboundHandler<Object> {
 
     private Channel channel;
-    private DemoMessages.DemoResponse resp;
-    private final BlockingQueue<DemoMessages.DemoResponse> resps = new LinkedBlockingQueue<DemoMessages.DemoResponse>();
+    private byte[] resp;
+    private final BlockingQueue<byte[]> resps = new LinkedBlockingQueue<byte[]>();
+    private WebSocketClientHandshaker handshaker;
+    private ChannelPromise handshakeFuture;
 
-    public DemoMessages.DemoResponse sendRequest(DemoMessages.Type type) {
+    public DemoMsgClientHandler(WebSocketClientHandshaker handshaker) {
+        this.handshaker = handshaker;
+    }
+
+    public ChannelFuture handshakeFuture() {
+        return handshakeFuture;
+    }
+
+    public byte[] sendRequest(DemoMessages.Type type) {
 
         DemoMessages.DemoRequest req = null;
         // send File request
@@ -76,19 +88,44 @@ public class DemoMsgClientHandler extends SimpleChannelInboundHandler<DemoMessag
     }
 
     @Override
+    public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
+        handshakeFuture = ctx.newPromise();
+    }
+
+    @Override
+    public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+        handshaker.handshake(ctx.channel());
+    }
+
+    @Override
     public void channelRegistered(ChannelHandlerContext ctx) {
         channel = ctx.channel();
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, DemoMessages.DemoResponse msg)
+    protected void channelRead0(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-        resps.add(msg);
+        final Channel ch = ctx.channel();
+        if (!handshaker.isHandshakeComplete()) {
+            // web socket client connected
+            handshaker.finishHandshake(ch, (FullHttpResponse) msg);
+            handshakeFuture.setSuccess();
+            return;
+        }
+
+        WebSocketFrame frame = (WebSocketFrame) msg;
+        BinaryWebSocketFrame binframe = (BinaryWebSocketFrame) frame;
+        byte[] bytes = new byte[binframe.content().readableBytes()];
+        binframe.content().readBytes(bytes);
+        resps.add(bytes);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
+        if (!handshakeFuture.isDone()) {
+            handshakeFuture.setFailure(cause);
+        }
         ctx.close();
     }
 }

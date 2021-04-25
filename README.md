@@ -54,3 +54,7 @@ https://www.baeldung.com/netty
 https://dzone.com/articles/build-a-simple-netty-application-with-and-without
 
 https://github.com/lohitvijayarenu/netty-protobuf
+
+https://github.com/spmallette/netty-example
+
+https://blog.csdn.net/hxx688/article/details/103417976

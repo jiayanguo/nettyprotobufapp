@@ -1,4 +1,4 @@
-package org.demo.nettyprotobuf.server;
+package org.demo.nettyprotobuf.websocket.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -12,19 +12,21 @@ public class DemoProtocolServerHandler extends SimpleChannelInboundHandler<DemoM
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DemoMessages.DemoRequest msg) {
-        if (msg.getType() == DemoMessages.Type.MSG) {
+        System.out.println("received request ...");
+        DemoMessages.DemoRequest request = msg;
+        if (request.getType() == DemoMessages.Type.MSG) {
             DemoMessages.DemoResponse.Builder builder = DemoMessages.DemoResponse.newBuilder();
             String message = "Accepted from Server, returning response";
             System.out.println(message);
             builder.setResponseMsg(message)
                     .setCode(0);
             ctx.write(builder.build());
-        } else if (msg.getType() == DemoMessages.Type.FILE) {
+        } else if (request.getType() == DemoMessages.Type.FILE) {
 
-            byte[] bFile = msg.getFile().toByteArray();
+            byte[] bFile = request.getFile().toByteArray();
             FileOutputStream fileOuputStream = null;
             try {
-                fileOuputStream = new FileOutputStream(FILE_DIR + msg.getFile().getFilename());
+                fileOuputStream = new FileOutputStream(FILE_DIR + request.getFile().getFilename());
                 fileOuputStream.write(bFile);
             } catch (Exception e) {
                 System.out.println(e);
@@ -45,7 +47,7 @@ public class DemoProtocolServerHandler extends SimpleChannelInboundHandler<DemoM
             ctx.write(builder.build());
         } else {
             DemoMessages.DemoResponse.Builder builder = DemoMessages.DemoResponse.newBuilder();
-            String message = "Unsupported message type " + msg.getType();
+            String message = "Unsupported message type " + request.getType();
             System.out.println(message);
             builder.setResponseMsg(message)
                     .setCode(1);
